@@ -3,44 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>해바라기 유치원</title>
+    <title>유아용 시장놀이 키오스크</title>
+    <!-- 구글 폰트 주아체 - 유아들에게 어울리는 귀여운 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="logo">🌻 해바라기 <span>유치원</span></div>
-        <nav>
-            <ul>
-                <li><a href="index.html">홈</a></li>
-                <li><a href="program.html">우리반 활동</a></li>
-                <li><a href="notice.html">알림장</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div id="app">
+        <!-- 1. 시작 화면 -->
+        <section id="screen-welcome" class="screen active">
+            <div class="logo-emoji">🛒</div>
+            <h1 class="title">신나는 시장놀이</h1>
+            <p class="subtitle">계산기를 눌러서 시작해볼까요?</p>
+            <button id="start-btn" class="action-btn primary pulse">👆 시작하기 👆</button>
+        </section>
 
-    <div class="hero">
-        <h1>환영합니다! 친구들!</h1>
-        <p>오늘도 즐겁고 신나는 하루를 시작해볼까요?</p>
+        <!-- 2. 물건 고르기 화면 -->
+        <section id="screen-shop" class="screen hidden">
+            <header class="shop-header">
+                <h2>어떤 물건을 샀나요? 터치해주세요!</h2>
+            </header>
+            
+            <div class="shop-layout">
+                <div class="product-grid" id="productGrid">
+                    <!-- JS 기능으로 상품 카드들이 요기에 자동으로 생성됩니다 -->
+                </div>
+                
+                <div class="cart-panel">
+                    <h3>내 장바구니 🧺</h3>
+                    <div id="cart-items" class="cart-items">
+                        <!-- 장바구니에 담은 항목들 -->
+                    </div>
+                    <div class="cart-total">
+                        <span>총 금액:</span>
+                        <span id="total-price" class="price-highlight">0원</span>
+                    </div>
+                    <div class="cart-actions">
+                        <button id="reset-cart-btn" class="action-btn secondary">🗑️ 모두 비우기</button>
+                        <button id="checkout-btn" class="action-btn primary" disabled>💳 계산하기</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 결제 수단 선택 화면 -->
+        <section id="screen-payment" class="screen hidden">
+            <h1 class="title">어떻게 계산할까요?</h1>
+            <div class="payment-methods">
+                <button class="payment-btn" data-method="card">
+                    <span class="emoji">💳</span>
+                    <span class="text">신용카드</span>
+                </button>
+                <button class="payment-btn" data-method="cash">
+                    <span class="emoji">💵</span>
+                    <span class="text">현금 지폐</span>
+                </button>
+                <button class="payment-btn" data-method="pay">
+                    <span class="emoji">📱</span>
+                    <span class="text">핸드폰 페이</span>
+                </button>
+            </div>
+            <div style="margin-top:40px;">
+                <button id="back-to-shop-btn" class="action-btn secondary">⬅ 물건 다시 고르기</button>
+            </div>
+        </section>
+
+        <!-- 4. 결제 진행 중 화면 (애니메이션 대기) -->
+        <section id="screen-processing" class="screen hidden">
+            <h1 class="title">계산 중이에요...</h1>
+            <div class="processing-animation">
+                <span id="payment-icon" class="emoji bounce">💳</span>
+            </div>
+            <p class="subtitle">잠시만 기다려주세요 ⏰</p>
+        </section>
+
+        <!-- 5. 결제 및 영수증 완료 화면 -->
+        <section id="screen-receipt" class="screen hidden">
+            <h1 class="title">계산이 완료되었어요! 🎉</h1>
+            <div id="receipt-paper" class="receipt">
+                <h3>--- 시장놀이 영수증 ---</h3>
+                <div id="receipt-items"></div>
+                <hr>
+                <div class="receipt-total">
+                    <span>합계:</span>
+                    <span id="receipt-total-price">0원</span>
+                </div>
+                <h3 style="margin-top:20px; color:#ff6b81;">감사합니다 안녕히 가세요! 👋</h3>
+            </div>
+            <button id="restart-btn" class="action-btn primary">처음으로 돌아가기</button>
+        </section>
     </div>
 
-    <main class="menu-container">
-        <!-- Menu 1 -->
-        <a href="program.html" class="menu-card card-1">
-            <div class="card-icon">🎨</div>
-            <h2>우리반 활동</h2>
-            <p>친구들의 멋진 작품과 활동 사진을 보러가요!</p>
-        </a>
+    <!-- 터치용 띠링음/성공음 (효과음) -->
+    <audio id="beep-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="success-sound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
 
-        <!-- Menu 2 -->
-        <a href="notice.html" class="menu-card card-2">
-            <div class="card-icon">📅</div>
-            <h2>이번주 알림장</h2>
-            <p>준비물과 중요한 일정을 확인해요!</p>
-        </a>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 해바라기 유치원. 사랑으로 가르칩니다.</p>
-    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
